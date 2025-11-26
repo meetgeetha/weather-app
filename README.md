@@ -2,7 +2,7 @@
 
 The main purpose of this repo is to demo the pr review is automated from a remote Github action [Link](https://github.com/marketplace/actions/ai-pr-reviewer-with-rag) with minimal setup
 
-A beautiful, modern and robust Python web application to display the real-time weather conditions for any place on the planet Earth. Built with Flask and featuring a responsive, gradient-based UI.
+A beautiful, modern and robust Python web application to display the real-time weather conditions for any place on the planet Earth. Built with Flask and featuring a responsive, gradient-based UI with PWA support.
 
 ## ✨ Features
 
@@ -15,10 +15,16 @@ A beautiful, modern and robust Python web application to display the real-time w
   - Beijing, China
   - Tokyo, Japan
   - Budapest, Hungary
-- **Modern UI**: Beautiful gradient design with smooth animations
-- **Real-time Data**: Live weather updates from OpenWeatherMap API
+  - Phuket, Thailand
+  - Dubai, UAE
+- **Modern UI**: Beautiful glassmorphism design with animated gradient hero section
+- **Real-time Data**: Live weather updates from OpenWeatherMap API with intelligent caching
+- **Celsius/Fahrenheit Toggle**: Switch between temperature units with localStorage persistence
 - **Detailed Information**: Temperature, humidity, wind speed, pressure, visibility, sunrise/sunset times
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **Progressive Web App (PWA)**: Install as a native app with offline support
+- **Performance Optimized**: Server-side caching, lazy loading images, service worker caching
+- **Accessibility**: Semantic HTML, ARIA attributes, keyboard navigation support
 
 ## 🚀 Quick Start
 
@@ -69,6 +75,23 @@ A beautiful, modern and robust Python web application to display the real-time w
 
 ## 📋 Configuration
 
+### Environment Variables
+
+The application supports the following environment variables (set them in your `.env` file):
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `WEATHER_API_KEY` | Your OpenWeatherMap API key | - | ✅ Yes |
+| `CACHE_TTL` | Cache time-to-live in seconds | 300 (5 min) | ❌ No |
+| `CACHE_MAXSIZE` | Maximum number of cached entries | 256 | ❌ No |
+
+Example `.env` file:
+```env
+WEATHER_API_KEY=your_actual_api_key_here
+CACHE_TTL=300
+CACHE_MAXSIZE=256
+```
+
 ### Getting an OpenWeatherMap API Key
 
 1. Visit [OpenWeatherMap](https://openweathermap.org/api)
@@ -79,6 +102,14 @@ A beautiful, modern and robust Python web application to display the real-time w
    ```
    WEATHER_API_KEY=your_actual_api_key_here
    ```
+
+### Caching Configuration
+
+The app includes an in-memory cache to reduce API calls and avoid rate limiting:
+- **CACHE_TTL**: How long (in seconds) weather data is cached before refreshing (default: 300 seconds = 5 minutes)
+- **CACHE_MAXSIZE**: Maximum number of city weather entries to cache (default: 256)
+
+Adjust these values based on your needs and API rate limits.
 
 ### Customizing Default Cities
 
@@ -132,13 +163,59 @@ weather-app/
 - `GET /api/weather?city=<city_name>&state=<state>&country=<country>` - Get weather for a specific location
 - `GET /api/cities` - Get weather for all default cities
 
+## 📱 Progressive Web App (PWA)
+
+This app can be installed as a Progressive Web App for a native app-like experience!
+
+### Installing the PWA
+
+#### On Desktop (Chrome/Edge):
+1. Open the app in your browser
+2. Look for the install icon (➕) in the address bar
+3. Click "Install" when prompted
+4. The app will open in its own window
+
+#### On Mobile (Android):
+1. Open the app in Chrome
+2. Tap the menu (⋮) and select "Add to Home screen"
+3. Confirm the installation
+4. Launch from your home screen
+
+#### On Mobile (iOS):
+1. Open the app in Safari
+2. Tap the Share button
+3. Select "Add to Home Screen"
+4. Confirm and launch from your home screen
+
+### PWA Icon Setup
+
+**Important**: The PWA requires icon files for proper installation. Follow these steps:
+
+1. Navigate to `static/icons/` directory
+2. Read the `README.md` file in that directory for instructions
+3. Generate icons using one of the suggested tools:
+   - [PWA Builder Image Generator](https://www.pwabuilder.com/imageGenerator)
+   - [Favicon.io](https://favicon.io/favicon-converter/)
+   - [RealFaviconGenerator](https://realfavicongenerator.net/)
+4. Place the generated PNG files in `static/icons/`
+
+Required icon sizes: 72x72, 96x96, 128x128, 144x144, 152x152, 192x192, 384x384, 512x512
+
+### Offline Support
+
+The service worker caches API responses and static assets, allowing the app to work partially offline:
+- Static assets (HTML, CSS, JS) are cached for offline use
+- API responses are cached for 5 minutes (configurable via `CACHE_TTL`)
+- An offline fallback page is shown when completely offline
+
 ## 🛠️ Technologies Used
 
-- **Backend**: Flask (Python web framework)
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
+- **Backend**: Flask (Python web framework) with cachetools for in-memory caching
+- **Frontend**: HTML5, CSS3, JavaScript (Vanilla), Bootstrap 5
 - **API**: OpenWeatherMap API
-- **Styling**: Custom CSS with gradient design
-- **Fonts**: Google Fonts (Poppins)
+- **Styling**: Custom CSS with glassmorphism and animated gradients
+- **PWA**: Service Worker with network-first caching strategy
+- **Performance**: Lazy loading images, localStorage for preferences
 
 ## 📱 Browser Support
 
@@ -146,6 +223,7 @@ weather-app/
 - Firefox (latest)
 - Safari (latest)
 - Edge (latest)
+- Mobile browsers with PWA support
 
 ## 🤝 Contributing
 

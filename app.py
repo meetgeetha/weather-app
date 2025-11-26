@@ -5,6 +5,8 @@ import os
 from flask import Flask, render_template, request, jsonify
 import requests
 from dotenv import load_dotenv
+from cachetools import TTLCache
+import threading
 
 load_dotenv()
 
@@ -13,6 +15,14 @@ app = Flask(__name__)
 # OpenWeatherMap API configuration
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY', '')
 WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5/weather'
+
+# Cache configuration
+CACHE_TTL = int(os.getenv('CACHE_TTL', 300))  # Default: 5 minutes
+CACHE_MAXSIZE = int(os.getenv('CACHE_MAXSIZE', 256))  # Default: 256 entries
+
+# Thread-safe cache for weather data
+weather_cache = TTLCache(maxsize=CACHE_MAXSIZE, ttl=CACHE_TTL)
+cache_lock = threading.Lock()
 
 # Validate API key on startup
 if not WEATHER_API_KEY or WEATHER_API_KEY == 'your_api_key_here':
@@ -40,7 +50,7 @@ DEFAULT_CITIES = [
 
 def get_weather_data(city_name, state='', country=''):
     """
-    Fetch weather data from OpenWeatherMap API
+    Fetch weather data from OpenWeatherMap API with caching
     
     Args:
         city_name: Name of the city
@@ -61,6 +71,12 @@ def get_weather_data(city_name, state='', country=''):
         query_parts.append(country)
     
     query = ','.join(query_parts)
+    
+    # Check cache first
+    cache_key = f"{query.lower()}"
+    with cache_lock:
+        if cache_key in weather_cache:
+            return weather_cache[cache_key]
     
     params = {
         'q': query,
@@ -104,6 +120,11 @@ def get_weather_data(city_name, state='', country=''):
             'sunset': data['sys']['sunset'],
             'timezone': data.get('timezone', 0)
         }
+        
+        # Store in cache
+        with cache_lock:
+            weather_cache[cache_key] = weather_info
+        
         return weather_info
     except requests.exceptions.RequestException as e:
         return {'error': f'Failed to fetch weather data: {str(e)}'}
