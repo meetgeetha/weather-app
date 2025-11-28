@@ -15,6 +15,16 @@ load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
+# Disable caching for static files in development
+@app.after_request
+def add_no_cache_headers(response):
+    """Add no-cache headers to prevent browser caching during development"""
+    if app.debug:
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
+
 # OpenWeatherMap API configuration
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY', '')
 WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5/weather'
@@ -139,7 +149,7 @@ def get_weather_data(city_name, state='', country=''):
         # Weather IDs 500-531 indicate rain/drizzle/thunderstorm
         # Also check if there's actual rain amount
         needs_umbrella = (weather_id >= 500 and weather_id < 600) or rain_amount > 0
-        
+
         # Format the response
         weather_info = {
             'city': data.get('name', city_name),
