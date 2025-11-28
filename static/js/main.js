@@ -79,6 +79,21 @@ document.addEventListener('DOMContentLoaded', () => {
       ? '<i class="fa-solid fa-umbrella" style="font-size: 1.1rem; color: #3b82f6;" title="Umbrella needed - Rain expected"></i>'
       : '<i class="fa-solid fa-umbrella" style="font-size: 1.1rem; color: #94a3b8; opacity: 0.4;" title="No umbrella needed - No rain expected"></i>';
     
+    // Thunderstorm indicator
+    const hasThunderstorm = w.has_thunderstorm === true || w.has_thunderstorm === 'true';
+    const thunderstormIcon = hasThunderstorm
+      ? '<i class="fa-solid fa-bolt" style="font-size: 1.1rem; color: #f59e0b;" title="Thunderstorm expected - Take caution"></i>'
+      : '';
+    
+    // Tornado indicator
+    const hasTornado = w.has_tornado === true || w.has_tornado === 'true';
+    const tornadoIcon = hasTornado
+      ? '<i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem; color: #ef4444;" title="Tornado warning - Seek shelter immediately"></i>'
+      : '';
+    
+    // Combine all weather indicators
+    const weatherIndicators = `${umbrellaIcon}${thunderstormIcon}${tornadoIcon}`;
+    
     card.innerHTML = `
       <div class="city-card-header">
         <div class="d-flex align-items-center justify-content-between">
@@ -87,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>
               <h5 class="mb-0 d-flex align-items-center gap-2">
                 ${w.city}
-                ${umbrellaIcon}
+                ${weatherIndicators}
               </h5>
               <div class="text-muted" style="font-size: 0.7rem; line-height: 1.1;">${w.country} • ${w.description}</div>
             </div>
@@ -145,7 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showDetails(w) {
-    modalTitle.textContent = `${w.city}, ${w.country}`;
+    // Build weather indicators for modal
+    const needsUmbrella = w.needs_umbrella === true || w.needs_umbrella === 'true' || (w.rain_amount && w.rain_amount > 0);
+    const hasThunderstorm = w.has_thunderstorm === true || w.has_thunderstorm === 'true';
+    const hasTornado = w.has_tornado === true || w.has_tornado === 'true';
+    
+    let indicators = '';
+    if (needsUmbrella) indicators += '<i class="fa-solid fa-umbrella" style="font-size: 1rem; color: #3b82f6; margin-left: 0.5rem;" title="Umbrella needed"></i>';
+    if (hasThunderstorm) indicators += '<i class="fa-solid fa-bolt" style="font-size: 1rem; color: #f59e0b; margin-left: 0.5rem;" title="Thunderstorm expected"></i>';
+    if (hasTornado) indicators += '<i class="fa-solid fa-triangle-exclamation" style="font-size: 1rem; color: #ef4444; margin-left: 0.5rem;" title="Tornado warning"></i>';
+    
+    modalTitle.innerHTML = `${w.city}, ${w.country}${indicators}`;
     document.getElementById('modalIcon').src = w.icon ? iconUrl(w.icon) : '';
     document.getElementById('modalDesc').textContent = w.description;
     document.getElementById('modalTemp').textContent = w.temperature;
@@ -160,7 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // featured card also updated
     document.getElementById('featuredIcon').src = w.icon ? iconUrl(w.icon) : '';
-    document.getElementById('featuredCity').textContent = `${w.city}, ${w.country}`;
+    // Build weather indicators for featured card
+    let featuredIndicators = '';
+    if (needsUmbrella) featuredIndicators += '<i class="fa-solid fa-umbrella" style="font-size: 1rem; color: #3b82f6; margin-left: 0.5rem;" title="Umbrella needed"></i>';
+    if (hasThunderstorm) featuredIndicators += '<i class="fa-solid fa-cloud-bolt" style="font-size: 1rem; color: #f59e0b; margin-left: 0.5rem;" title="Thunderstorm expected"></i>';
+    if (hasTornado) featuredIndicators += '<i class="fa-solid fa-tornado" style="font-size: 1rem; color: #ef4444; margin-left: 0.5rem;" title="Tornado warning"></i>';
+    document.getElementById('featuredCity').innerHTML = `${w.city}, ${w.country}${featuredIndicators}`;
     document.getElementById('featuredDesc').textContent = w.description;
     document.getElementById('featuredTemp').textContent = w.temperature;
     document.getElementById('featuredFeels').textContent = w.feels_like;
