@@ -146,10 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="detail-label">Rain</span>
           <span class="detail-value">${w.rain_amount || 0} mm</span>
         </div>
-        <div class="detail-row">
-          <span class="detail-label">TZ</span>
-          <span class="detail-value">${w.timezone || 0}s</span>
-        </div>
       </div>
     `;
 
@@ -181,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('modalVisibility').textContent = (typeof w.visibility === 'number') ? w.visibility : w.visibility;
     document.getElementById('modalSunrise').textContent = formatTime(w.sunrise, w.timezone);
     document.getElementById('modalSunset').textContent = formatTime(w.sunset, w.timezone);
-    document.getElementById('modalTZ').textContent = w.timezone || 0;
 
     // featured card also updated
     document.getElementById('featuredIcon').src = w.icon ? iconUrl(w.icon) : '';
