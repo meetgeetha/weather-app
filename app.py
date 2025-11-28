@@ -149,6 +149,12 @@ def get_weather_data(city_name, state='', country=''):
         # Weather IDs 500-531 indicate rain/drizzle/thunderstorm
         # Also check if there's actual rain amount
         needs_umbrella = (weather_id >= 500 and weather_id < 600) or rain_amount > 0
+        
+        # Check for thunderstorms (weather IDs 200-232)
+        has_thunderstorm = weather_id >= 200 and weather_id < 300
+        
+        # Check for tornado (weather ID 781)
+        has_tornado = weather_id == 781
 
         # Format the response
         weather_info = {
@@ -166,7 +172,9 @@ def get_weather_data(city_name, state='', country=''):
             'sunset': data.get('sys', {}).get('sunset'),
             'timezone': data.get('timezone', 0),
             'rain_amount': round(rain_amount, 1) if rain_amount else 0,
-            'needs_umbrella': needs_umbrella
+            'needs_umbrella': needs_umbrella,
+            'has_thunderstorm': has_thunderstorm,
+            'has_tornado': has_tornado
         }
 
         # Cache only successful formatted response
