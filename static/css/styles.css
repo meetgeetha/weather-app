@@ -1,544 +1,243 @@
 :root {
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --accent: rgba(255, 255, 255, 0.2);
-  /* Modern Mesh Gradient */
-  --page-bg: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
-  --text-primary: #1e1e2e;
-  --text-secondary: #454555;
-  --umbrella-needed: #7c58aa;
-  --umbrella-not-needed: #9ea8b5;
-}
-
-* {
-  box-sizing: border-box
+  --glass-bg: rgba(16, 18, 27, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-primary: #00f2ff;
+  --accent-secondary: #ff00ff;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0c0;
+  --danger: #ff2a6d;
+  --warning: #ffbf00;
+  --success: #05d5fa;
+  --severity-low: #05d5fa;
+  --severity-mod: #ffbf00;
+  --severity-high: #ff2a6d;
 }
 
 body {
   min-height: 100vh;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: var(--page-bg);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: radial-gradient(circle at top left, #1a0b2e 0%, #000000 100%);
   color: var(--text-primary);
+  overflow-x: hidden;
 }
 
-/* Modern hero gradient */
-/* Modern hero gradient - glassy and blending */
-.hero {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+/* Dynamic background blobs */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  opacity: 0.5;
+  animation: float 10s ease-in-out infinite alternate;
 }
 
-@keyframes gradientShift {
+body::before {
+  background: var(--accent-primary);
+  top: -100px;
+  left: -100px;
+}
+
+body::after {
+  background: var(--accent-secondary);
+  bottom: -100px;
+  right: -100px;
+  animation-delay: -5s;
+}
+
+@keyframes float {
   0% {
-    background-position: 0% 50%
-  }
-
-  50% {
-    background-position: 100% 50%
+    transform: translate(0, 0) scale(1);
   }
 
   100% {
-    background-position: 0% 50%
+    transform: translate(50px, 50px) scale(1.1);
   }
 }
 
-/* Glass card */
+.hero {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  padding: 2rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+}
+
 .card.glass {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  backdrop-filter: blur(10px) saturate(180%);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.card.glass * {
-  color: inherit;
+.card.glass:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 45px rgba(0, 242, 255, 0.2);
+  border-color: var(--accent-primary);
 }
 
-/* Override Bootstrap button styles for cards with button role */
-.card[role="button"],
-.card.city-card[role="button"] {
-  background: rgba(255, 255, 255, 0.9) !important;
-  color: #0b1220 !important;
-  border: none !important;
+/* Inputs */
+.form-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: white;
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
 }
 
-/* City cards - ensure proper contrast in all states */
-.city-card,
-.card.city-card,
-.card.city-card.glass {
-  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.95) !important;
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
-  min-height: auto;
+.form-control:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+  color: white;
 }
 
-/* Modern city card styling - ultra compact */
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-primary), #00a8ff);
+  border: none;
+  border-radius: 50px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 242, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 242, 255, 0.6);
+  background: linear-gradient(135deg, #00f2ff, #00a8ff);
+}
+
+/* Featured Card "Intense" style */
+#featuredCard {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  border-left: 4px solid var(--accent-secondary);
+}
+
+/* Typography Overrides */
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+
+.display-6 {
+  font-weight: 800;
+  background: linear-gradient(to right, #fff, var(--accent-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* City Card Specifics */
 .city-card {
-  padding: 0.75rem !important;
-  border-radius: 12px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(10px) saturate(180%);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-}
-
-.city-card-header {
-  border-bottom: 1px solid rgba(30, 41, 59, 0.08);
-  padding-bottom: 0.375rem;
-  margin-bottom: 0.375rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .city-card-header h5 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-  margin-bottom: 0.0625rem;
-  line-height: 1.2;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent-primary);
 }
 
-.city-card-header h5 .fa-umbrella {
-  margin-left: 0.25rem;
-  vertical-align: middle;
-}
-
-.city-card-header .display-6 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--text-primary);
-}
-
-.city-card-header img {
-  width: 40px !important;
-  height: 40px !important;
-}
-
-.city-card-details {
-  margin-top: 0.375rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.detail-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  padding: 0.125rem 0;
-  font-size: 0.7rem;
-  line-height: 1.2;
-}
-
-.detail-row-inline {
-  flex-direction: row;
-  align-items: stretch;
-  gap: 0.5rem;
-}
-
-.detail-item {
-  flex: 1 1 50%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-.detail-label {
-  color: var(--text-secondary);
-  font-weight: 500;
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  line-height: 1.1;
-}
-
-.detail-value {
-  color: var(--text-primary);
-  font-weight: 600;
-  font-size: 0.75rem;
-  line-height: 1.2;
-}
-
-/* Sunrise / Sunset row */
-.sun-times-row {
-  align-items: center;
-}
-
-.sun-time {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.4rem;
-  min-width: 0;
-}
-
-.sun-time .sun-icon {
-  font-size: 1rem;
-  opacity: 0.85;
-}
-
-.sun-time.sunrise .sun-icon {
-  color: #fbbf24;
-}
-
-.sun-time.sunset .sun-icon {
-  color: #fb7185;
-}
-
-.sun-label {
-  display: block;
-  font-size: 0.6rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.sun-value {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.sun-times-modal {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.25rem 0;
-  flex-wrap: nowrap;
-}
-
-.sun-times-modal .sun-time {
-  flex: 1 1 50%;
-}
-
-.city-card .small {
-  font-size: 0.7rem;
-  color: var(--text-secondary);
-  line-height: 1.1;
-}
-
-.city-card .text-muted {
-  color: var(--text-secondary) !important;
-  opacity: 0.8;
-}
-
-/* Prevent any white or transparent backgrounds that would cause illegibility */
-.city-card:not([style*="background"]),
-.card.city-card:not([style*="background"]) {
-  background: rgba(255, 255, 255, 0.9) !important;
-  background-color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.city-card:hover,
-.city-card:focus,
-.city-card:active,
-.city-card:focus-visible,
-.city-card[aria-pressed="true"],
-.city-card.show {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
-  outline: none;
-  background: rgba(255, 255, 255, 1) !important;
-  color: var(--text-primary) !important;
-  border-color: rgba(99, 102, 241, 0.2) !important;
-}
-
-.city-card:focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.5) !important;
-  outline-offset: 2px;
-}
-
-/* Ensure all child elements maintain contrast */
-.city-card *,
-.city-card:hover *,
-.city-card:focus *,
-.city-card:active *,
-.city-card:focus-visible * {
-  color: var(--text-primary) !important;
-}
-
-.city-card h5,
-.city-card h5:hover,
-.city-card h5:focus,
-.city-card h5:active {
-  color: var(--text-primary) !important;
-}
-
-.city-card .text-muted,
-.city-card:hover .text-muted,
-.city-card:focus .text-muted,
-.city-card:active .text-muted {
-  color: var(--text-secondary) !important;
-  opacity: 0.8 !important;
-}
-
-.city-card .fs-4,
-.city-card .small {
-  color: var(--text-primary) !important;
-}
-
-/* Grid responsiveness */
-#citiesGrid .col {
-  display: flex;
-}
-
-/* Main content area */
-#mainContent {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
-
-#mainContent h2 {
-  color: var(--text-primary);
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-
-/* Small utility */
-.text-muted {
-  opacity: 0.8
-}
-
-/* Loading skeleton */
-.skeleton {
-  height: 80px;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #e6eef8 10%, #f7fbff 50%, #e6eef8 90%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
+/* Animations */
+@keyframes pulse-glow {
   0% {
-    background-position: -200% 0
+    box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 0, 255, 0);
   }
 
   100% {
-    background-position: 200% 0
+    box-shadow: 0 0 0 0 rgba(255, 0, 255, 0);
   }
 }
 
-/* Featured card - ensure proper contrast */
-#featuredCard.card.glass,
-#featuredCard.card.glass.text-dark {
-  background: rgba(255, 255, 255, 0.95) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+.severity-high {
+  animation: pulse-glow 2s infinite;
+  border: 1px solid var(--danger) !important;
 }
 
-#featuredCard.card.glass *,
-#featuredCard.card.glass.text-dark * {
-  color: var(--text-primary) !important;
+/* Modal */
+.modal-content.glass {
+  background: #1a1a2e;
+  border: 1px solid var(--accent-secondary);
 }
 
-#featuredCard.card.glass .text-muted,
-#featuredCard.card.glass.text-dark .text-muted {
-  color: var(--text-secondary) !important;
-  opacity: 0.8 !important;
+.btn-close {
+  filter: invert(1) brightness(200%);
 }
 
-/* Modal glass variant - ensure all text is readable */
-.modal-content.glass,
-.modal-content.glass.modal-content {
-  background: rgba(255, 255, 255, 0.98) !important;
-  background-color: rgba(255, 255, 255, 0.98) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+/* Severity Badge */
+.severity-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7em;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-left: 8px;
 }
 
-.modal-content.glass *,
-.modal-content.glass .modal-header *,
-.modal-content.glass .modal-body *,
-.modal-content.glass .modal-footer * {
-  color: var(--text-primary) !important;
+.severity-badge.low {
+  background: rgba(5, 213, 250, 0.2);
+  color: var(--severity-low);
+  border: 1px solid var(--severity-low);
 }
 
-.modal-content.glass .modal-title,
-.modal-content.glass h5,
-.modal-content.glass .lead,
-.modal-content.glass p,
-.modal-content.glass li,
-.modal-content.glass strong,
-.modal-content.glass span {
-  color: var(--text-primary) !important;
+.severity-badge.mod {
+  background: rgba(255, 191, 0, 0.2);
+  color: var(--severity-mod);
+  border: 1px solid var(--severity-mod);
 }
 
-.modal-content.glass .text-muted,
-.modal-content.glass .modal-body .text-muted {
-  color: var(--text-secondary) !important;
-  opacity: 0.8 !important;
+.severity-badge.high {
+  background: rgba(255, 42, 109, 0.2);
+  color: var(--severity-high);
+  border: 1px solid var(--severity-high);
 }
 
-.modal-content.glass .btn-close {
-  filter: brightness(0) saturate(0) !important;
-  opacity: 0.6 !important;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-.modal-content.glass .btn-close:hover {
-  opacity: 1 !important;
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
 }
 
-/* Unit toggle */
-.form-check-input {
-  cursor: pointer;
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
 }
 
-/* Refresh button styling */
-#refreshBtn {
-  transition: transform 0.3s ease;
-}
-
-#refreshBtn:hover {
-  transform: rotate(90deg);
-}
-
-#refreshBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Loading spinner animation */
-.fa-spinner.fa-spin {
-  animation: fa-spin 1s infinite linear;
-}
-
-@keyframes fa-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* CRITICAL: Force proper contrast for all city cards in ALL states - highest specificity */
-body .container #citiesGrid .col .card.city-card.glass,
-body .container #citiesGrid .col .card.city-card.glass[role="button"],
-body .container #citiesGrid .col .card.city-card.glass:hover,
-body .container #citiesGrid .col .card.city-card.glass:focus,
-body .container #citiesGrid .col .card.city-card.glass:active,
-body .container #citiesGrid .col .card.city-card.glass:focus-visible,
-body .container #citiesGrid .col .card.city-card.glass:focus-within {
-  background: rgba(255, 255, 255, 0.95) !important;
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  color: #0b1220 !important;
-}
-
-body .container #citiesGrid .col .card.city-card.glass *,
-body .container #citiesGrid .col .card.city-card.glass:hover *,
-body .container #citiesGrid .col .card.city-card.glass:focus *,
-body .container #citiesGrid .col .card.city-card.glass:active * {
-  color: #0b1220 !important;
-}
-
-body .container #citiesGrid .col .card.city-card.glass .text-muted,
-body .container #citiesGrid .col .card.city-card.glass:hover .text-muted,
-body .container #citiesGrid .col .card.city-card.glass:focus .text-muted,
-body .container #citiesGrid .col .card.city-card.glass:active .text-muted {
-  color: rgba(11, 18, 32, 0.7) !important;
-  opacity: 1 !important;
-}
-
-/* CRITICAL: Force proper contrast for modal content - highest specificity */
-body .modal.show .modal-content.glass,
-body .modal.show .modal-dialog .modal-content.glass,
-body #detailModal .modal-content.glass,
-body #detailModal .modal-content.glass .modal-header,
-body #detailModal .modal-content.glass .modal-body,
-body #detailModal .modal-content.glass .modal-footer {
-  background: rgba(255, 255, 255, 0.95) !important;
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  color: #0b1220 !important;
-}
-
-body #detailModal .modal-content.glass *,
-body #detailModal .modal-content.glass .modal-header *,
-body #detailModal .modal-content.glass .modal-body *,
-body #detailModal .modal-content.glass .modal-footer *,
-body #detailModal .modal-content.glass .modal-title,
-body #detailModal .modal-content.glass h5,
-body #detailModal .modal-content.glass .lead,
-body #detailModal .modal-content.glass p,
-body #detailModal .modal-content.glass li,
-body #detailModal .modal-content.glass ul,
-body #detailModal .modal-content.glass strong,
-body #detailModal .modal-content.glass span {
-  color: #0b1220 !important;
-}
-/* Favorite button styling */
-.favorite-btn {
-  transition: transform 0.2s ease, color 0.2s ease;
-  font-size: 0.9rem;
-  z-index: 10;
-  position: relative;
-}
-
-.favorite-btn:hover {
-  transform: scale(1.2);
-  color: #ffc107 !important;
-}
-
-.favorite-btn:focus {
-  outline: 2px solid rgba(255, 193, 7, 0.5);
-  outline-offset: 2px;
-}
-
-/* Toast notifications */
-.toast-container {
-  z-index: 9999;
-}
-
-.toast {
-  min-width: 300px;
-}
-
-/* Loading spinner */
-.fa-spinner.fa-spin {
-  animation: fa-spin 1s infinite linear;
-}
-
-@keyframes fa-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Metrics and favorites buttons */
-#viewMetricsBtn, #viewFavoritesBtn {
-  transition: all 0.2s ease;
-}
-
-#viewMetricsBtn:hover, #viewFavoritesBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Accessibility */
-button:focus-visible,
-input:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-/* Error states */
-.alert {
-  animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
 }

@@ -173,6 +173,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Combine all weather indicators
     const weatherIndicators = `${umbrellaIcon}${thunderstormIcon}${tornadoIcon}`;
+
+    // Severity Badge
+    let severityBadge = '';
+    const severityIdx = w.severity_index || 'Low';
+    const severityClass = severityIdx === 'High' ? 'high' : (severityIdx === 'Moderate' ? 'mod' : 'low');
+    severityBadge = `<span class="severity-badge ${severityClass}">${severityIdx}</span>`;
+    
+    // Add pulsing effect for high severity
+    if (severityIdx === 'High') {
+      card.classList.add('severity-high');
+    }
     
     // Favorite button
     const isFav = isFavorite(w.city, w.country);
@@ -193,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <h5 class="mb-0 d-flex align-items-center gap-2">
                 ${w.city}
                 ${weatherIndicators}
+                ${severityBadge}
                 ${favoriteBtn}
               </h5>
               <div class="text-muted" style="font-size: 0.7rem; line-height: 1.1;">${w.country} • ${w.description}</div>
@@ -305,7 +317,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (needsUmbrella) featuredIndicators += '<i class="fa-solid fa-umbrella" style="font-size: 1rem; color: #3b82f6; margin-left: 0.5rem;" title="Umbrella needed"></i>';
     if (hasThunderstorm) featuredIndicators += '<i class="fa-solid fa-cloud-bolt" style="font-size: 1rem; color: #f59e0b; margin-left: 0.5rem;" title="Thunderstorm expected"></i>';
     if (hasTornado) featuredIndicators += '<i class="fa-solid fa-tornado" style="font-size: 1rem; color: #ef4444; margin-left: 0.5rem;" title="Tornado warning"></i>';
-    document.getElementById('featuredCity').innerHTML = `${w.city}, ${w.country}${featuredIndicators}`;
+    
+    // Add severity to modal title
+    const sevIdx = w.severity_index || 'Low';
+    const sevClass = sevIdx === 'High' ? 'high' : (sevIdx === 'Moderate' ? 'mod' : 'low');
+    const sevBadge = `<span class="severity-badge ${sevClass}" style="font-size: 0.6em; vertical-align: middle;">${sevIdx} SEVERITY</span>`;
+    
+    modalTitle.innerHTML = `${w.city}, ${w.country}${indicators} ${sevBadge}`;
+    
+    // Add severity to featured card
+    document.getElementById('featuredCity').innerHTML = `${w.city}, ${w.country}${featuredIndicators} ${sevBadge}`;
     document.getElementById('featuredDesc').textContent = w.description;
     document.getElementById('featuredTemp').textContent = w.temperature;
     document.getElementById('featuredFeels').textContent = w.feels_like;
