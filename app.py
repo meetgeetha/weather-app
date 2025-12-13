@@ -245,7 +245,9 @@ def get_weather_data(city_name, state='', country=''):
             'rain_amount': round(rain_amount, 1) if rain_amount else 0,
             'needs_umbrella': needs_umbrella,
             'has_thunderstorm': has_thunderstorm,
-            'has_tornado': has_tornado
+            'has_tornado': has_tornado,
+            'severity_index': 'High' if (abs(round(data['main']['temp']) - 70) * 1.5 + (round(data['wind']['speed'], 1) * 2) + (round(rain_amount, 1) * 20)) > 50 else 'Moderate' if (abs(round(data['main']['temp']) - 70) * 1.5 + (round(data['wind']['speed'], 1) * 2) + (round(rain_amount, 1) * 20)) > 20 else 'Low',
+            'severity_score': round((abs(round(data['main']['temp']) - 70) * 1.5 + (round(data['wind']['speed'], 1) * 2) + (round(rain_amount, 1) * 20)))
         }
 
         # Cache only successful formatted response
