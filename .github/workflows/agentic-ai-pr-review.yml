@@ -1,4 +1,4 @@
-name: AI Code Review (Agentic)
+name: Agentic PR Review
 
 on:
   pull_request:
@@ -19,7 +19,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
       
-      - name: AI PR Review (Agentic)
+      - name: Agentic PR Review
         uses: devopsgeetha/pr-reviewer-action@AGENTIC_AI
         with:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}

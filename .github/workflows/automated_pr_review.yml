@@ -1,4 +1,4 @@
-name: Automated PR Review
+name: Automated_Prreview
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -12,7 +12,7 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR Review Action
+      - name: Automated_Prreview
         uses: devopsgeetha/automated_prreview@main
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
