@@ -2,7 +2,12 @@ name: Automated PR Review
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-
+    
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+  
 jobs:
   review:
     runs-on: ubuntu-latest
