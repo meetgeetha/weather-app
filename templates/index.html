@@ -24,9 +24,9 @@
       <div class="d-flex align-items-center justify-content-between">
         <h1 class="h3 mb-0">Weather App</h1>
         <form id="searchForm" class="d-flex" role="search" aria-label="Search weather">
-          <input id="searchCity" class="form-control me-2" type="search" placeholder="City, State?, Country?"
-            aria-label="Search" />
-          <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+          <input id="searchCity" class="form-control search-glass me-0" type="search"
+            placeholder="City, State?, Country?" aria-label="Search" />
+          <button class="btn btn-search-glass" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
       </div>
 
@@ -126,6 +126,13 @@
       </div>
     </div>
   </div>
+
+  <footer class="mt-auto">
+    <div class="container">
+      <p class="mb-0">&copy; 2024 Weather App. All rights reserved.</p>
+      <small class="text-white-50">Built with Flask &amp; Bootstrap 5</small>
+    </div>
+  </footer>
 
   <!-- Bootstrap JS & dependencies (deferred) -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
