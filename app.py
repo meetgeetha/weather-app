@@ -5,7 +5,9 @@ Weather App - A simple Flask application to display weather conditions
 import os
 import time
 import threading
+import logging
 from collections import OrderedDict
+from datetime import datetime
 from flask import Flask, render_template, request, jsonify, send_from_directory
 
 import requests
@@ -13,17 +15,40 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Disable caching for static files in development
 @app.after_request
 def add_no_cache_headers(response):
-    """Add no-cache headers to prevent browser caching during development"""
+    """
+    Add no-cache headers to prevent browser caching during development.
+    
+    Args:
+        response: Flask response object
+        
+    Returns:
+        Flask response object with no-cache headers added
+    """
     if app.debug:
         response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
     return response
+
+# Request logging middleware
+@app.before_request
+def log_request_info():
+    """Log incoming requests for debugging and monitoring"""
+    logger.info(f'Request: {request.method} {request.path} from {request.remote_addr}')
+    if request.args:
+        logger.debug(f'Query params: {dict(request.args)}')
 
 # OpenWeatherMap API configuration
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY', '')
@@ -254,8 +279,12 @@ def offline_page():
 # Serve the service worker at the root so it can control the whole scope
 @app.route('/sw.js')
 def service_worker():
-    # Serve the compiled/standalone service worker file from static/js/sw.js
-    # This ensures register('/sw.js') has the proper scope '/'
+    """
+    Serve the service worker file with no-cache headers.
+    
+    Returns:
+        Service worker JavaScript file with appropriate headers
+    """
     response = send_from_directory(os.path.join(app.root_path, 'static', 'js'), 'sw.js')
     # Always prevent caching of the service worker itself
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
@@ -264,5 +293,22 @@ def service_worker():
     return response
 
 
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """
+    Health check endpoint to monitor application status.
+    
+    Returns:
+        JSON response with application health status and timestamp
+    """
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': datetime.utcnow().isoformat(),
+        'cache_size': len(_cache),
+        'cache_maxsize': CACHE_MAXSIZE
+    })
+
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 5001)))
+    logger.info('Starting Weather App server...')
+    app.run(debug=True, host='0.0.0.0', port=5000)

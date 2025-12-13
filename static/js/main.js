@@ -215,7 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
   async function fetchDefaultCities() {
     citiesGrid.innerHTML = '';
     // show skeletons while loading
-    for (let i=0;i<6;i++){
+    const skeletonCount = 6;
+    for (let i = 0; i < skeletonCount; i++) {
       const col = document.createElement('div');
       col.className = 'col-12 col-sm-6 col-md-4';
       col.innerHTML = `<div class="skeleton"></div>`;
@@ -305,6 +306,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Refresh button handler
+  const refreshBtn = document.getElementById('refreshBtn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      refreshBtn.disabled = true;
+      refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      fetchDefaultCities().finally(() => {
+        refreshBtn.disabled = false;
+        refreshBtn.innerHTML = '<i class="fa-solid fa-arrow-rotate-right"></i>';
+      });
+    });
+  }
+
   // PWA: register service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
@@ -315,6 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Service worker registration failed:', err);
       });
   }
+
+  // Health check on load
+  fetch('/api/health')
+    .then(res => res.json())
+    .then(data => {
+      console.log('App health status:', data);
+    })
+    .catch(err => {
+      console.warn('Health check failed:', err);
+    });
 
   // initialize
   fetchDefaultCities();

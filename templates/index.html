@@ -23,11 +23,16 @@
     <div class="container">
       <div class="d-flex align-items-center justify-content-between">
         <h1 class="h3 mb-0">Weather App</h1>
-        <form id="searchForm" class="d-flex" role="search" aria-label="Search weather">
-          <input id="searchCity" class="form-control me-2" type="search" placeholder="City, State?, Country?"
-            aria-label="Search" />
-          <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
-        </form>
+        <div class="d-flex gap-2">
+          <button id="refreshBtn" class="btn btn-outline-light" type="button" title="Refresh weather data">
+            <i class="fa-solid fa-arrow-rotate-right"></i>
+          </button>
+          <form id="searchForm" class="d-flex" role="search" aria-label="Search weather">
+            <input id="searchCity" class="form-control me-2" type="search" placeholder="City, State?, Country?"
+              aria-label="Search" />
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+          </form>
+        </div>
       </div>
 
       <div class="row mt-4 align-items-center">

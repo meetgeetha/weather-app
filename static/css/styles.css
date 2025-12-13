@@ -391,6 +391,34 @@ body {
   cursor: pointer;
 }
 
+/* Refresh button styling */
+#refreshBtn {
+  transition: transform 0.3s ease;
+}
+
+#refreshBtn:hover {
+  transform: rotate(90deg);
+}
+
+#refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading spinner animation */
+.fa-spinner.fa-spin {
+  animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* CRITICAL: Force proper contrast for all city cards in ALL states - highest specificity */
 body .container #citiesGrid .col .card.city-card.glass,
 body .container #citiesGrid .col .card.city-card.glass[role="button"],
