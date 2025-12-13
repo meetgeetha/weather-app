@@ -39,6 +39,86 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
+  // Favorite cities feature
+  const FAVORITES_KEY = 'weather_app_favorites';
+  
+  function getFavorites() {
+    const favs = localStorage.getItem(FAVORITES_KEY);
+    return favs ? JSON.parse(favs) : [];
+  }
+
+  function saveFavorites(favorites) {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+  }
+
+  function toggleFavorite(city, country) {
+    const favorites = getFavorites();
+    const key = `${city},${country}`;
+    const index = favorites.findIndex(f => f.key === key);
+    
+    if (index > -1) {
+      favorites.splice(index, 1);
+      showToast(`${city} removed from favorites`, 'info');
+    } else {
+      favorites.push({ key, city, country, added: new Date().toISOString() });
+      showToast(`${city} added to favorites`, 'success');
+    }
+    saveFavorites(favorites);
+    return index === -1; // Returns true if added, false if removed
+  }
+
+  function isFavorite(city, country) {
+    const favorites = getFavorites();
+    const key = `${city},${country}`;
+    return favorites.some(f => f.key === key);
+  }
+
+  // Toast notification system
+  function showToast(message, type = 'info') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toastContainer';
+      toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+      toastContainer.style.zIndex = '9999';
+      document.body.appendChild(toastContainer);
+    }
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    `;
+    toastContainer.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+    bsToast.show();
+    toast.addEventListener('hidden.bs.toast', () => toast.remove());
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + K to focus search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchCity.focus();
+    }
+    // Escape to close modal
+    if (e.key === 'Escape' && modal._isShown) {
+      modal.hide();
+    }
+    // Ctrl/Cmd + Shift + R to refresh (but prevent default browser refresh)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'r' && e.shiftKey) {
+      e.preventDefault();
+      const refreshBtn = document.getElementById('refreshBtn');
+      if (refreshBtn) refreshBtn.click();
+    }
+  });
+
   // helper to format unix timestamp using timezone offset
   function formatTime(unixSec, tzOffsetSec) {
     if (!unixSec) return 'N/A';
